@@ -1,0 +1,11 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00_core.ipynb
+      - section: statistics_tests
+        contents:
+          - statistics_tests\significant_test.ipynb
+      - section: utils
+        contents:
+          - utils\CONSTANTS.ipynb
