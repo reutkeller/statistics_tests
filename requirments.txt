@@ -1,1 +1,4 @@
-nbdev
+pandas
+numpy
+scipy
+matplotlib
