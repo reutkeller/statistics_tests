@@ -26,7 +26,7 @@ import scipy.stats as stats
 # %% ../nbs/statistics_tests/significant_test.ipynb 7
 data = {
     'id': [str_id + str(i) for i in range(1, user_defined_number + 1)],
-    'value': np.random.rand(user_defined_number).tolist(),
+    'value': ((0.015 - 0.01) * np.random.rand(user_defined_number)+ 0.01).tolist(),
     'group': np.random.randint(1, 7, size=user_defined_number).tolist()
 }
 df=pd.DataFrame(data)
@@ -39,19 +39,29 @@ def anova_test(
     values_col_name : str , # the coulmn name of the column that contains the values of each observation
     ):
   
-  values = df[group_col_name].unique().tolist()
+  group_codes = df[group_col_name].unique().tolist()
 
-  shapiros={'value' : [], 'shapiro_statistic': [] , 'shapiro_p_value':[]}
-  for value in values:
-        tmp = df[df[group_col_name] == value]
-        shapiro_test = stats.shapiro(tmp[tmp[group_col_name] == value][values_col_name])
 
-        shapiros['value'].append(value)
-        shapiros['shapiro_statistic'].append(shapiro_test[0])
-        shapiros['shapiro_p_value'].append(shapiro_test[1])
+  shapiros={shapiro_group_code_str  : [], shapiro_statistic_str: [] , shapiro_p_value_str:[]}
+  
+  for group_code in group_codes:
+        tmp = df[df[group_col_name] == group_code]
+        shapiro_test = stats.shapiro(tmp[tmp[group_col_name] == group_code][values_col_name])
+
+        shapiros[shapiro_group_code_str].append(group_code)
+        shapiros[shapiro_statistic_str].append(shapiro_test[0])
+        shapiros[shapiro_p_value_str].append(shapiro_test[1])
 
 
   shapiros_df=pd.DataFrame(shapiros)
+
+  if (shapiros_df[shapiro_p_value_str] < p_value_border).all():
+    dfs_for_levene =[df[df[group_col_name] == val][values_col_name] for val in group_codes]
+
+    levene_result = stats.levene(*dfs_for_levene)
+
+
+# #     levene_results[value] = levene_result
   
   
   return shapiros_df

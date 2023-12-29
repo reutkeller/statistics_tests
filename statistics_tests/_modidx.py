@@ -5,6 +5,7 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://reutkeller.github.io',
                 'git_url': 'https://github.com/reutkeller/statistics_tests',
                 'lib_path': 'statistics_tests'},
-  'syms': { 'statistics_tests.core': {'statistics_tests.core.foo': ('core.html#foo', 'statistics_tests/core.py')},
+  'syms': { 'statistics_tests.const_vals': {},
+            'statistics_tests.core': {'statistics_tests.core.foo': ('core.html#foo', 'statistics_tests/core.py')},
             'statistics_tests.sig_test': { 'statistics_tests.sig_test.anova_test': ( 'statistics_tests/significant_test.html#anova_test',
                                                                                      'statistics_tests/sig_test.py')}}}
