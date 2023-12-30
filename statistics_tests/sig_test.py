@@ -10,11 +10,13 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 
+from . import const_vals as const
+
 # %% ../nbs/statistics_tests/significant_test.ipynb 7
 data = {
-    'id': [str_id + str(i) for i in range(1, user_defined_number + 1)],
-    'value': ((0.01 - 0.03) * np.random.rand(user_defined_number)+ 0.01).tolist(),
-    'group': np.random.randint(1, 7, size=user_defined_number).tolist()
+    'id': [const.str_id + str(i) for i in range(1, const.user_defined_number + 1)],
+    'value': ((0.01 - 0.03) * np.random.rand(const.user_defined_number)+ 0.01).tolist(),
+    'group': np.random.randint(1, 7, size=const.user_defined_number).tolist()
 }
 df=pd.DataFrame(data)
 df
@@ -30,44 +32,41 @@ def anova_test(
   group_codes = df[group_col_name].unique().tolist()
   dfs_for_test =[df[df[group_col_name] == val][values_col_name] for val in group_codes]
 
-  shapiros={shapiro_group_code_str  : [], shapiro_statistic_str: [] , shapiro_p_value_str:[]}
+  shapiros={const.shapiro_group_code_str  : [], const.shapiro_statistic_str: [] , const.shapiro_p_value_str:[]}
   
-  sig_tests_results={p_value_str: [], sig_test_name_col_name : [] }
+  sig_tests_results={const.p_value_str: [], const.sig_test_name_col_name : [] }
 
   for group_code in group_codes:
         tmp = df[df[group_col_name] == group_code]
         shapiro_test = stats.shapiro(tmp[tmp[group_col_name] == group_code][values_col_name])
 
-        shapiros[shapiro_group_code_str].append(group_code)
-        shapiros[shapiro_statistic_str].append(shapiro_test[0])
-        shapiros[shapiro_p_value_str].append(shapiro_test[1])
+        shapiros[const.shapiro_group_code_str].append(group_code)
+        shapiros[const.shapiro_statistic_str].append(shapiro_test[0])
+        shapiros[const.shapiro_p_value_str].append(shapiro_test[1])
 
 
   shapiros_df=pd.DataFrame(shapiros)
 
-  if (shapiros_df[shapiro_p_value_str] < p_value_border).all():
+  if (shapiros_df[const.shapiro_p_value_str] < const.p_value_border).all():
 
     levene_result = stats.levene(*dfs_for_test)
     
-    if levene_result[1]>p_value_border:
+    if levene_result[1]>const.p_value_border:
         
         anova=stats.f_oneway(dfs_for_test)
-        # sig_tests_results[shapiro_group_code_str].append(group_code)
-        sig_tests_results[p_value_str].append(anova[1])
-        sig_tests_results[sig_test_name_col_name].append(anova_name_str)
+        sig_tests_results[const.p_value_str].append(anova[1])
+        sig_tests_results[const.sig_test_name_col_name].append(const.anova_name_str)
         
     else:
       kruskal=stats.kruskal(*dfs_for_test)
-      # sig_tests_results[shapiro_group_code_str].append(group_code)
-      sig_tests_results[p_value_str].append(kruskal[1])
-      sig_tests_results[sig_test_name_col_name].append(kruskal_name_str)
+      sig_tests_results[const.p_value_str].append(kruskal[1])
+      sig_tests_results[const.sig_test_name_col_name].append(const.kruskal_name_str)
 
   else:
     
     kruskal=stats.kruskal(*dfs_for_test)
-    # sig_tests_results[shapiro_group_code_str].append(group_code)
-    sig_tests_results[p_value_str].append(kruskal[1])
-    sig_tests_results[sig_test_name_col_name].append(kruskal_name_str)
+    sig_tests_results[const.p_value_str].append(kruskal[1])
+    sig_tests_results[const.sig_test_name_col_name].append(const.kruskal_name_str)
      
   
   results = pd.DataFrame(sig_tests_results)
